@@ -4,21 +4,35 @@
 {% block body %}
 <div class="container">
     <h1>Available Medicines</h1>
+
+    <!-- Search Form -->
+    <form method="GET" action="">
+        <div class="form-group">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search medicines...">
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Search</button>
+    </form>
+
+    <!-- Medicines List -->
     <form method="POST" action="">
         <div class="row">
-            {% for medicine in medicines %}
+            {% for medicine in medicines.items %}
             <div class="col-md-4">
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ medicine.name }}</h5>
-                        <p class="card-text">{{ medicine.description }}</p>
-                        <p class="card-text">Price: ${{ medicine.price }}</p>
-                        <p class="card-text">Available Quantity: {{ medicine.quantity }}</p>
+                        <p class="card-text">Price: ₹{{ medicine.price }}</p>
+                        <p class="card-text">Is Discontinued: {{ 'Yes' if medicine.is_discontinued else 'No' }}</p>
+                        <p class="card-text">Manufacturer: {{ medicine.manufacturer_name }}</p>
+                        <p class="card-text">Type: {{ medicine.type }}</p>
+                        <p class="card-text">Pack Size: {{ medicine.pack_size_label }}</p>
+                        <p class="card-text">Composition: {{ medicine.short_composition1 }}, {{ medicine.short_composition2 }}</p>
 
                         <input type="hidden" name="medicine_id" value="{{ medicine.id }}">
                         <div class="input-group mb-3">
-                            <input type="number" name="quantity" min="1" max="{{ medicine.quantity }}" value="1" class="form-control" required>
-                            <button type="submit" class="btn btn-primary">Add to Basket</button>
+                            <button type="button" class="btn btn-secondary" onclick="decreaseQuantity(this)">-</button>
+                            <input type="number" name="quantity" min="0" value="0" class="form-control quantity-input" onchange="updateBasket(this)" required>
+                            <button type="button" class="btn btn-secondary" onclick="increaseQuantity(this)">+</button>
                         </div>
                     </div>
                 </div>
@@ -27,6 +41,74 @@
         </div>
     </form>
 
+    <!-- Pagination Controls -->
+    <div class="pagination-container">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if medicines.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('meds', page=medicines.prev_num, search=search_query) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&laquo;</span>
+                </li>
+                {% endif %}
+                
+                {% for p in medicines.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                    {% if p %}
+                        <li class="page-item {% if medicines.page == p %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('meds', page=p, search=search_query) }}">{{ p }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if medicines.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('meds', page=medicines.next_num, search=search_query) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-hidden="true">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
     <a href="{{ url_for('basket') }}" class="btn btn-secondary mt-3">View Basket</a>
 </div>
+
+<!-- JavaScript for handling quantity updates and form submission -->
+<script>
+function decreaseQuantity(button) {
+    const input = button.nextElementSibling;
+    const currentValue = parseInt(input.value);
+    if (currentValue > 0) {
+        input.value = currentValue - 1;
+        updateBasket(input);
+    }
+}
+
+function increaseQuantity(button) {
+    const input = button.previousElementSibling;
+    input.value = parseInt(input.value) + 1;
+    updateBasket(input);
+}
+
+function updateBasket(input) {
+    const form = input.closest('form');
+    if (input.value > 0) {
+        form.submit();
+    }
+}
+</script>
 {% endblock %}

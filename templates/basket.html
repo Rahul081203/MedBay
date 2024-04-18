@@ -17,13 +17,13 @@
             <tr>
                 <td>{{ item.medicine.name }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>${{ item.cost }}</td>
+                <td>₹{{ item.cost }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <h3>Total Cost: ${{ total_cost }}</h3>
+    <h3>Total Cost: ₹{{ total_cost }}</h3>
 
     <form method="POST" action="{{ url_for('order') }}">
         <button type="submit" class="btn btn-primary">Place Order</button>
