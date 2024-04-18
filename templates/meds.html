@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Medicines{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Available Medicines</h1>
+    <form method="POST" action="">
+        <div class="row">
+            {% for medicine in medicines %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ medicine.name }}</h5>
+                        <p class="card-text">{{ medicine.description }}</p>
+                        <p class="card-text">Price: ${{ medicine.price }}</p>
+                        <p class="card-text">Available Quantity: {{ medicine.quantity }}</p>
+
+                        <input type="hidden" name="medicine_id" value="{{ medicine.id }}">
+                        <div class="input-group mb-3">
+                            <input type="number" name="quantity" min="1" max="{{ medicine.quantity }}" value="1" class="form-control" required>
+                            <button type="submit" class="btn btn-primary">Add to Basket</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+
+    <a href="{{ url_for('basket') }}" class="btn btn-secondary mt-3">View Basket</a>
+</div>
+{% endblock %}

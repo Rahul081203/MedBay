@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block title %}Basket{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Your Basket</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Medicine</th>
+                <th>Quantity</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in basket_items %}
+            <tr>
+                <td>{{ item.medicine.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.cost }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Total Cost: ${{ total_cost }}</h3>
+
+    <form method="POST" action="{{ url_for('order') }}">
+        <button type="submit" class="btn btn-primary">Place Order</button>
+    </form>
+</div>
+{% endblock %}

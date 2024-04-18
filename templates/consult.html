@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Consult{% endblock %}
+{% block body %}
+<div class="consult"><br><center>
+    <h4>Know your symptoms?</h4><br>
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text" id="addon-wrapping">Symptoms</span>
+        <input type="text" class="form-control" placeholder="Search for symptoms" aria-label="symptoms" aria-describedby="addon-wrapping">
+    </div><br><br><h2>OR</h2><br><br>
+    <h4>Search using Specialty?</h4><br>
+    <div class="input-group flex-nowrap">
+        <span class="input-group-text" id="addon-wrapping">Specialty</span>
+        <input type="text" class="form-control" placeholder="Search for specialty" aria-label="specialty" aria-describedby="addon-wrapping">
+    </div>
+</center>
+</div>
+{% endblock %}
